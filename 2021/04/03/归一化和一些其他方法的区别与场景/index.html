@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vstay.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="归一化：  把数据变成(０，１)或者（1,1）之间的小数。主要是为了数据处理方便提出来的，把数据映射到0～1范围之内处理，更加便捷快速。 把有量纲表达式变成无量纲表达式，便于不同单位或量级的指标能够进行比较和加权。归一化是一种简化计算的方式，即将有量纲的表达式，经过变换，化为无量纲的表达式，成为纯量。  标准化： ​        在机器学习中，我们可能要处理不同种类的资料，例如，音讯和图片上的像">
+<meta property="og:type" content="article">
+<meta property="og:title" content="归一化和一些其他方法的区别与场景">
+<meta property="og:url" content="https://www.vstay.cn/2021/04/03/%E5%BD%92%E4%B8%80%E5%8C%96%E5%92%8C%E4%B8%80%E4%BA%9B%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E5%9C%BA%E6%99%AF/index.html">
+<meta property="og:site_name" content="V的学习经验">
+<meta property="og:description" content="归一化：  把数据变成(０，１)或者（1,1）之间的小数。主要是为了数据处理方便提出来的，把数据映射到0～1范围之内处理，更加便捷快速。 把有量纲表达式变成无量纲表达式，便于不同单位或量级的指标能够进行比较和加权。归一化是一种简化计算的方式，即将有量纲的表达式，经过变换，化为无量纲的表达式，成为纯量。  标准化： ​        在机器学习中，我们可能要处理不同种类的资料，例如，音讯和图片上的像">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.vstay.cn/20171027225346700">
+<meta property="og:image" content="https://www.vstay.cn/20171027225501116">
+<meta property="og:image" content="https://www.vstay.cn/20171027231904618">
+<meta property="og:image" content="https://www.vstay.cn/20150422180153_979.png">
+<meta property="og:image" content="https://www.vstay.cn/20150422180153_825.png">
+<meta property="article:published_time" content="2021-04-03T14:54:59.000Z">
+<meta property="article:modified_time" content="2021-04-03T14:54:59.000Z">
+<meta property="article:author" content="Vstay">
+<meta property="article:tag" content="归一化">
+<meta property="article:tag" content="标准化">
+<meta property="article:tag" content="中心化">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.vstay.cn/20171027225346700">
+
+
+<link rel="canonical" href="https://www.vstay.cn/2021/04/03/%E5%BD%92%E4%B8%80%E5%8C%96%E5%92%8C%E4%B8%80%E4%BA%9B%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E5%9C%BA%E6%99%AF/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.vstay.cn/2021/04/03/%E5%BD%92%E4%B8%80%E5%8C%96%E5%92%8C%E4%B8%80%E4%BA%9B%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E5%9C%BA%E6%99%AF/","path":"2021/04/03/归一化和一些其他方法的区别与场景/","title":"归一化和一些其他方法的区别与场景"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>归一化和一些其他方法的区别与场景 | V的学习经验</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">V的学习经验</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">To be,or not to be</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BD%92%E4%B8%80%E5%8C%96%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">归一化的作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BD%92%E4%B8%80%E5%8C%96%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.</span> <span class="nav-text">归一化的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E6%9C%80%E5%B0%8F%E6%A0%87%E5%87%86%E5%8C%96%EF%BC%88Min-Max-Normalization%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">最大最小标准化（Min-Max Normalization）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Z-score%E6%A0%87%E5%87%86%E5%8C%96%E6%96%B9%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">Z-score标准化方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%BD%92%E4%B8%80%E5%8C%96%E6%96%B9%E6%B3%95"><span class="nav-number">2.3.</span> <span class="nav-text">非线性归一化方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">应用场景</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vstay"
+      src="/uploads/avatar.png">
+  <p class="site-author-name" itemprop="name">Vstay</p>
+  <div class="site-description" itemprop="description">Sometimes coding,Sometimes thinking</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">89</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vstay97" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vstay97" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:vstay@qq.com" title="E-Mail → mailto:vstay@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-user-friends fa-fw"></i>
+      Friends
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://junjieblog.com/" title="https:&#x2F;&#x2F;junjieblog.com&#x2F;" rel="noopener" target="_blank">Rover's Blog</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhihu.com/people/o-shui-ge-er" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;o-shui-ge-er" rel="noopener" target="_blank">水歌儿's Zhihu</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Vstay97" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.vstay.cn/2021/04/03/%E5%BD%92%E4%B8%80%E5%8C%96%E5%92%8C%E4%B8%80%E4%BA%9B%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E5%9C%BA%E6%99%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="Vstay">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="V的学习经验">
+      <meta itemprop="description" content="Sometimes coding,Sometimes thinking">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="归一化和一些其他方法的区别与场景 | V的学习经验">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          归一化和一些其他方法的区别与场景
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-03 22:54:59" itemprop="dateCreated datePublished" datetime="2021-04-03T22:54:59+08:00">2021-04-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>归一化：</p>
+<ol>
+<li>把数据变成(０，１)或者（1,1）之间的小数。主要是为了数据处理方便提出来的，把数据映射到0～1范围之内处理，更加便捷快速。</li>
+<li>把有量纲表达式变成无量纲表达式，便于不同单位或量级的指标能够进行比较和加权。归一化是一种简化计算的方式，即将有量纲的表达式，经过变换，化为无量纲的表达式，成为纯量。</li>
+</ol>
+<p>标准化：</p>
+<p>​        在机器学习中，我们可能要处理不同种类的资料，例如，音讯和图片上的像素值，这些资料可能是高维度的，资料标准化后会使每个特征中的数值平均变为0(将每个特征的值都减掉原始资料中该特征的平均)、标准差变为1，这个方法被广泛的使用在许多机器学习算法中(例如：支持向量机、逻辑回归和类神经网络)。</p>
+<p>中心化：</p>
+<p>​        平均值为0，对标准差无要求</p>
+<p>归一化和标准化的区别：</p>
+<p>​        归一化是将样本的特征值转换到同一量纲下把数据映射到[0,1]或者[-1, 1]区间内，仅由变量的极值决定，因区间放缩法是归一化的一种。标准化是依照特征矩阵的列处理数据，其通过求z-score的方法，转换为标准正态分布，和整体样本分布相关，每个样本点都能对标准化产生影响。它们的相同点在于都能取消由于量纲不同引起的误差；都是一种线性变换，都是对向量X按照比例压缩再进行平移。</p>
+<p>标准化和中心化的区别：</p>
+<p>​        标准化是原始分数减去平均数然后除以标准差，中心化是原始分数减去平均数。 所以一般流程为先中心化再标准化。</p>
+<p>无量纲：</p>
+<p>​        我的理解就是通过某种方法能去掉实际过程中的单位，从而简化计算。</p>
+<span id="more"></span>
+
+<h1 id="归一化的作用"><a href="#归一化的作用" class="headerlink" title="归一化的作用"></a>归一化的作用</h1><p>归一化的目的就是使得预处理的数据被限定在一定的范围内（比如[0,1]或者[-1,1]），从而消除<strong>奇异样本数据</strong>导致的不良影响。</p>
+<ol>
+<li><p>在统计学中，归一化的具体作用是归纳统一样本的统计分布性。归一化在0<del>1之间是统计的概率分布，归一化在-1</del>+1之间是统计的坐标分布。</p>
+</li>
+<li><p>奇异样本数据是指相对于其他输入样本特别大或特别小的样本矢量（即特征向量），譬如，下面为具有两个特征的样本数据x1、x2、x3、x4、x5、x6（特征向量—&gt;列向量）,其中x6这个样本的两个特征相对其他样本而言相差比较大，因此，x6认为是奇异样本数据。</p>
+</li>
+</ol>
+<p><img src="/20171027225346700" alt="img"></p>
+<p>奇异样本数据的存在会引起训练时间增大，同时也可能导致无法收敛。</p>
+<p>因此，当存在奇异样本数据时，在进行训练之前需要对预处理数据进行归一化；反之，<strong>不存在奇异样本数据时，则可以不进行归一化。</strong></p>
+<p>归一化前后对比如下：</p>
+<p><img src="/20171027225501116" alt="img"></p>
+<p><img src="/20171027231904618" alt="img"></p>
+<p>进行归一化以后，目标函数会呈现比较“圆”，这样训练速度大大加快，少走很多弯路。</p>
+<p>优点：</p>
+<ol>
+<li>归一化后加快了梯度下降求最优解的速度</li>
+<li>归一化有可能提高精度（如KNN）</li>
+</ol>
+<p><strong>没有一种数据标准化的方法，放在每一个问题，放在每一个模型，都能提高算法精度和加速算法的收敛速度</strong></p>
+<h1 id="归一化的区别"><a href="#归一化的区别" class="headerlink" title="归一化的区别"></a>归一化的区别</h1><h2 id="最大最小标准化（Min-Max-Normalization）"><a href="#最大最小标准化（Min-Max-Normalization）" class="headerlink" title="最大最小标准化（Min-Max Normalization）"></a>最大最小标准化（Min-Max Normalization）</h2><p>又称为离差标准化，使结果值映射到[0 ，1]之间，转换函数如下：</p>
+<p><img src="/20150422180153_979.png" alt="为什么一些机器学习模型需要对数据进行归一化？"></p>
+<p>适用情况：<strong>数值比较集中</strong></p>
+<p>缺陷：</p>
+<ul>
+<li>如果max和min不稳定，很容易使得归一化结果不稳定，使得后续使用效果也不稳定</li>
+<li>实际使用中可以用经验常量来替代max和min。</li>
+</ul>
+<p>应用场景：</p>
+<p>在不涉及距离度量、协方差计算、数据不符合正太分布。</p>
+<h2 id="Z-score标准化方法"><a href="#Z-score标准化方法" class="headerlink" title="Z-score标准化方法"></a><strong>Z-score</strong>标准化方法</h2><p>数据处理后符合标准正态分布，即均值为0，标准差为1，其转化函数为：</p>
+<p><img src="/20150422180153_825.png" alt="img"></p>
+<p>其中μ为所有样本数据的均值，σ为所有样本数据的标准差。</p>
+<p>适用情况：原始数据的分布可以近似为高斯分布，否则归一化的效果会变得很糟糕</p>
+<p>应用场景：在分类、聚类算法中，需要使用距离来度量相似性的时候、或者使用PCA技术进行降维的时候，Z-score standardization表现更好</p>
+<h2 id="非线性归一化方法"><a href="#非线性归一化方法" class="headerlink" title="非线性归一化方法"></a>非线性归一化方法</h2><p>数据分化比较大的场景，有些数值很大，有些很小。</p>
+<p>方法包括 log，反正切等，<strong>需要根据数据分布的情况，决定非线性函数的曲线</strong></p>
+<h1 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h1><ol>
+<li>概率模型不需要归一化，因为这种模型不关心变量的取值，而是关心变量的分布和变量之间的条件概率</li>
+<li>SVM、线性回归之类的最优化问题需要归一化，是否归一化主要在于是否关心变量取值</li>
+<li>神经网络需要标准化处理，一般变量的取值在-1到1之间，这样做是为了弱化某些变量的值较大而对模型产生影响。一般神经网络中的隐藏层采用tanh激活函数比sigmod激活函数要好些，因为tanh双曲正切函数的取值[-1,1]之间，均值为0.</li>
+<li>在K近邻算法中，如果不对解释变量进行标准化，那么具有小数量级的解释变量的影响就会微乎其微</li>
+</ol>
+<p>必须归一化&#x2F;标准化的模型：</p>
+<ul>
+<li>SVM</li>
+<li>KNN</li>
+<li>神经网络<ul>
+<li>输入的变量数量级不同，容易引起数值问题</li>
+<li>求解需要<ul>
+<li>初始化：每个神经元在合理范围内，保证有效</li>
+<li>梯度：如果太大，会给梯度的更新带来数值问题</li>
+<li>学习率：梯度非常大时，学习率就必须非常小，不如直接将数据归一化</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Vstay
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.vstay.cn/2021/04/03/%E5%BD%92%E4%B8%80%E5%8C%96%E5%92%8C%E4%B8%80%E4%BA%9B%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E5%9C%BA%E6%99%AF/" title="归一化和一些其他方法的区别与场景">https://www.vstay.cn/2021/04/03/归一化和一些其他方法的区别与场景/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%BD%92%E4%B8%80%E5%8C%96/" rel="tag"><i class="fa fa-tag"></i> 归一化</a>
+              <a href="/tags/%E6%A0%87%E5%87%86%E5%8C%96/" rel="tag"><i class="fa fa-tag"></i> 标准化</a>
+              <a href="/tags/%E4%B8%AD%E5%BF%83%E5%8C%96/" rel="tag"><i class="fa fa-tag"></i> 中心化</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/02/Attention%E6%9C%BA%E5%88%B6%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3/" rel="prev" title="Attention机制的一些理解">
+                  <i class="fa fa-chevron-left"></i> Attention机制的一些理解
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/04/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E4%B9%8B%E9%97%B4%E7%9A%84%E6%AF%94%E8%BE%83/" rel="next" title="激活函数之间的比较">
+                  激活函数之间的比较 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">陕ICP备16015358号-1 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vstay</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">876k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:17</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

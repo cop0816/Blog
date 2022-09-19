@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vstay.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="激活函数的作用如果没有激活函数，那么每一层的输入都是上层输入的线性函数，无论神经网络有多少层 输出的都是线性组合，只有加入激活函数，神经网络才具备分层的线性映射学习能力。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="激活函数之间的比较">
+<meta property="og:url" content="https://www.vstay.cn/2021/04/04/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E4%B9%8B%E9%97%B4%E7%9A%84%E6%AF%94%E8%BE%83/index.html">
+<meta property="og:site_name" content="V的学习经验">
+<meta property="og:description" content="激活函数的作用如果没有激活函数，那么每一层的输入都是上层输入的线性函数，无论神经网络有多少层 输出的都是线性组合，只有加入激活函数，神经网络才具备分层的线性映射学习能力。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.vstay.cn/clip_image002.png">
+<meta property="og:image" content="https://www.vstay.cn/image-20210328183330124.png">
+<meta property="og:image" content="https://www.vstay.cn/ae9d12662d9e1073200f081659ff7ea3.svg">
+<meta property="og:image" content="https://www.vstay.cn/v2-e05dd5aa9a1674395a279da6645c060f_r.jpg">
+<meta property="og:image" content="https://www.vstay.cn/clip_image002-1616930225368.png">
+<meta property="og:image" content="https://www.vstay.cn/v2-c14a20c9ccd9c724e603aafdc11dfdb8_r.jpg">
+<meta property="og:image" content="https://www.vstay.cn/clip_image002-1616990192986.png">
+<meta property="og:image" content="https://www.vstay.cn/image-20210329115731880.png">
+<meta property="article:published_time" content="2021-04-04T12:51:12.000Z">
+<meta property="article:modified_time" content="2021-04-04T12:51:12.000Z">
+<meta property="article:author" content="Vstay">
+<meta property="article:tag" content="激活函数">
+<meta property="article:tag" content="Sigmoid">
+<meta property="article:tag" content="ReLU">
+<meta property="article:tag" content="Tanh">
+<meta property="article:tag" content="LeakyReLU">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.vstay.cn/clip_image002.png">
+
+
+<link rel="canonical" href="https://www.vstay.cn/2021/04/04/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E4%B9%8B%E9%97%B4%E7%9A%84%E6%AF%94%E8%BE%83/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.vstay.cn/2021/04/04/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E4%B9%8B%E9%97%B4%E7%9A%84%E6%AF%94%E8%BE%83/","path":"2021/04/04/激活函数之间的比较/","title":"激活函数之间的比较"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>激活函数之间的比较 | V的学习经验</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">V的学习经验</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">To be,or not to be</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">激活函数的作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Sigmoid"><span class="nav-number">2.</span> <span class="nav-text">Sigmoid</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReLU"><span class="nav-number">3.</span> <span class="nav-text">ReLU</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tanh"><span class="nav-number">4.</span> <span class="nav-text">Tanh</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LeakyReLU"><span class="nav-number">5.</span> <span class="nav-text">LeakyReLU</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vstay"
+      src="/uploads/avatar.png">
+  <p class="site-author-name" itemprop="name">Vstay</p>
+  <div class="site-description" itemprop="description">Sometimes coding,Sometimes thinking</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">89</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vstay97" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vstay97" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:vstay@qq.com" title="E-Mail → mailto:vstay@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-user-friends fa-fw"></i>
+      Friends
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://junjieblog.com/" title="https:&#x2F;&#x2F;junjieblog.com&#x2F;" rel="noopener" target="_blank">Rover's Blog</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhihu.com/people/o-shui-ge-er" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;o-shui-ge-er" rel="noopener" target="_blank">水歌儿's Zhihu</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Vstay97" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.vstay.cn/2021/04/04/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E4%B9%8B%E9%97%B4%E7%9A%84%E6%AF%94%E8%BE%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="Vstay">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="V的学习经验">
+      <meta itemprop="description" content="Sometimes coding,Sometimes thinking">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="激活函数之间的比较 | V的学习经验">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          激活函数之间的比较
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-04 20:51:12" itemprop="dateCreated datePublished" datetime="2021-04-04T20:51:12+08:00">2021-04-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="激活函数的作用"><a href="#激活函数的作用" class="headerlink" title="激活函数的作用"></a>激活函数的作用</h1><p>如果没有激活函数，那么每一层的输入都是上层输入的线性函数，无论神经网络有多少层 输出的都是线性组合，只有加入激活函数，神经网络才具备分层的线性映射学习能力。</p>
+<span id="more"></span>
+
+<h1 id="Sigmoid"><a href="#Sigmoid" class="headerlink" title="Sigmoid"></a>Sigmoid</h1><p>公式：</p>
+<p><img src="/clip_image002.png" alt="img"></p>
+<p>图像：</p>
+<p><img src="/image-20210328183330124.png" alt="image-20210328183330124"></p>
+<p>最大的特点就是将数值压缩到(0, 1)区间，在机器学习中常利用(0, 1)区间的数值来表示以下意义：</p>
+<ol>
+<li>概率分布：根据概率公理化定义知道，概率的取值范围在[0, 1]之间，Sigmoid函数的(0, 1)区间的输出和概率分布的取值范围[0, 1]契合。因此可以利用Sigmoid函数将输出转译为概率值的输出。这也是Logistic（逻辑回归）使用Sigmoid函数的原因之一；</li>
+<li>信号强度：一般可以将0~1理解成某种信号的强度。由于RNN循环神经网络只能够解决短期依赖的问题，不能够解决长期依赖的问题，因此提出了LSTM、GRU，这些网络相比于RNN最大的特点就是加入了门控制，通过门来控制是否允许记忆通过，而Sigmoid函数还能够代表门控值（Gate）的强度，当Sigmoid输出1的时候代表当前门控全部开放（允许全部记忆通过），当Sigmoid输出0的时候代表门控关闭（不允许任何记忆通过）。</li>
+</ol>
+<ul>
+<li>缺点：<ol>
+<li>会有梯度弥散</li>
+<li>不是关于原点对称</li>
+<li>计算exp比较耗时</li>
+</ol>
+</li>
+</ul>
+<h1 id="ReLU"><a href="#ReLU" class="headerlink" title="ReLU"></a>ReLU</h1><p>公式：</p>
+<p><img src="/ae9d12662d9e1073200f081659ff7ea3.svg" alt="img"></p>
+<p>图像：</p>
+<p><img src="/v2-e05dd5aa9a1674395a279da6645c060f_r.jpg" alt="preview"></p>
+<ul>
+<li><p>缺点：</p>
+<p>  梯度弥散没完全解决，在（-）的部分相当于神经元死亡且不会复活</p>
+</li>
+<li><p>优点：</p>
+<ol>
+<li>解决了部分梯度弥散问题</li>
+<li>收敛速度更快</li>
+</ol>
+</li>
+</ul>
+<h1 id="Tanh"><a href="#Tanh" class="headerlink" title="Tanh"></a>Tanh</h1><p>公式：</p>
+<p><img src="/clip_image002-1616930225368.png" alt="img"></p>
+<p>图像：</p>
+<p><img src="/v2-c14a20c9ccd9c724e603aafdc11dfdb8_r.jpg" alt="preview"></p>
+<ul>
+<li><p>缺点：</p>
+<ol>
+<li><p>Tanh解决了Sigmoid的输出是不是零中心的问题，但仍然存在饱和问题</p>
+</li>
+<li><p>计算量大(比sigmoid快)</p>
+</li>
+</ol>
+</li>
+<li><p>优点：</p>
+<ol>
+<li>解决了原点对称的问题</li>
+<li>tanh在原点附近与y &#x3D; x函数形式相近，当激活值比较低的时候，训练相对比容易；</li>
+<li>tanh的变化敏感区间较宽，缓解梯度弥散的现象。tanh导数取值范围在0到1之间，要优于sigmoid激活函数的0到0.25，相比于Sigmoid激活函数能够缓解梯度弥散的现象；</li>
+<li>tanh的输出和输入能够保持非线性单调上升和下降的关系，符合反向传网络梯度的求解，容错性好，有界</li>
+</ol>
+</li>
+</ul>
+<h1 id="LeakyReLU"><a href="#LeakyReLU" class="headerlink" title="LeakyReLU"></a>LeakyReLU</h1><p>公式：</p>
+<p><img src="/clip_image002-1616990192986.png" alt="img"></p>
+<p>图像：</p>
+<p><img src="/image-20210329115731880.png" alt="image-20210329115731880"></p>
+<p>LeakyReLU函数是针对ReLU函数的Dead ReLU而提出来的。ReLU激活函数在x &lt; 0的时候导数恒为0，很可能致使很多神经元为0，参数得不到更新。通过LeakyReLU函数表达式也可以看出，与ReLU函数唯一的不同就是在x &lt; 0的部分输出不在为0而是px，p为超参数，通常是一个较小的值。当p &#x3D; 0的时候，LeakyReLU函数退化成ReLU函数；当p ≠ 0的时候，在x &lt; 0的时候能够得到较小的导数值p。从而避免出现Dead ReLU的现象。</p>
+<p>当然了其实ReLU激活函数当x &lt; 0的时候输出为0也有它的优点。也就是增大网络的稀疏性，这往往会提高模型的泛化能力（类似dropout作用）。因此虽然提出了LeakyReLU这种激活函数，但是目前使用比较广泛的还是ReLU激活函数。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>神经网络的任务可以大致分为两类：回归和分类。</p>
+<p>分类问题是数据属于哪一个类别的问题，比如区分图像中的人是男是女。回归问题是根据输入来预测(连续的)数值的问题，比如根据图像来预测这个人的体重。<br>输出层的激活函数，要根据求解问题的性质而定。</p>
+<p>一般地，回归问题使用恒等函数，二分类问题使用sigmoid函数，多元分类可以使用softmax函数</p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Vstay
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.vstay.cn/2021/04/04/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E4%B9%8B%E9%97%B4%E7%9A%84%E6%AF%94%E8%BE%83/" title="激活函数之间的比较">https://www.vstay.cn/2021/04/04/激活函数之间的比较/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/" rel="tag"><i class="fa fa-tag"></i> 激活函数</a>
+              <a href="/tags/Sigmoid/" rel="tag"><i class="fa fa-tag"></i> Sigmoid</a>
+              <a href="/tags/ReLU/" rel="tag"><i class="fa fa-tag"></i> ReLU</a>
+              <a href="/tags/Tanh/" rel="tag"><i class="fa fa-tag"></i> Tanh</a>
+              <a href="/tags/LeakyReLU/" rel="tag"><i class="fa fa-tag"></i> LeakyReLU</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/03/%E5%BD%92%E4%B8%80%E5%8C%96%E5%92%8C%E4%B8%80%E4%BA%9B%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E5%9C%BA%E6%99%AF/" rel="prev" title="归一化和一些其他方法的区别与场景">
+                  <i class="fa fa-chevron-left"></i> 归一化和一些其他方法的区别与场景
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/05/02/Tensorflow%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA/" rel="next" title="Tensorflow框架搭建">
+                  Tensorflow框架搭建 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">陕ICP备16015358号-1 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vstay</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">876k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:17</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

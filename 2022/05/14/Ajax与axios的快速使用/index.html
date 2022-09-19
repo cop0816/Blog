@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vstay.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="主要内容:  Ajax 可以在不重新加载整个页面 的情况下，与服务器交换数据并更新部分网页的技术   Axios Axios可以对原生的AJAX进行封装，简化书写。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ajax与axios的快速使用">
+<meta property="og:url" content="https://www.vstay.cn/2022/05/14/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="V的学习经验">
+<meta property="og:description" content="主要内容:  Ajax 可以在不重新加载整个页面 的情况下，与服务器交换数据并更新部分网页的技术   Axios Axios可以对原生的AJAX进行封装，简化书写。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210823235114367.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210823235006847.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824000706401.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824001015706.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824001443897.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824001608916.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824005956117.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824010247642.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824010438260.png">
+<meta property="article:published_time" content="2022-05-14T17:47:26.000Z">
+<meta property="article:modified_time" content="2022-05-14T17:47:26.000Z">
+<meta property="article:author" content="Vstay">
+<meta property="article:tag" content="Ajax">
+<meta property="article:tag" content="axios">
+<meta property="article:tag" content="JavaWeb">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210823235114367.png">
+
+
+<link rel="canonical" href="https://www.vstay.cn/2022/05/14/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.vstay.cn/2022/05/14/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/","path":"2022/05/14/Ajax与axios的快速使用/","title":"Ajax与axios的快速使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Ajax与axios的快速使用 | V的学习经验</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">V的学习经验</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">To be,or not to be</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ajax"><span class="nav-number">1.</span> <span class="nav-text">Ajax</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E5%92%8C%E5%BC%82%E6%AD%A5"><span class="nav-number">1.1.2.</span> <span class="nav-text">同步和异步</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="nav-number">1.2.</span> <span class="nav-text">快速入门</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.1.</span> <span class="nav-text">服务端实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.2.</span> <span class="nav-text">客户端实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">1.2.3.</span> <span class="nav-text">测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Axios"><span class="nav-number">2.</span> <span class="nav-text">Axios</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">2.1.</span> <span class="nav-text">基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8-1"><span class="nav-number">2.2.</span> <span class="nav-text">快速入门</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8E%E7%AB%AF%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.1.</span> <span class="nav-text">后端实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E7%AB%AF%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.2.</span> <span class="nav-text">前端实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%E5%88%AB%E5%90%8D"><span class="nav-number">2.3.</span> <span class="nav-text">请求方法别名</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vstay"
+      src="/uploads/avatar.png">
+  <p class="site-author-name" itemprop="name">Vstay</p>
+  <div class="site-description" itemprop="description">Sometimes coding,Sometimes thinking</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">89</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vstay97" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vstay97" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:vstay@qq.com" title="E-Mail → mailto:vstay@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-user-friends fa-fw"></i>
+      Friends
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://junjieblog.com/" title="https:&#x2F;&#x2F;junjieblog.com&#x2F;" rel="noopener" target="_blank">Rover's Blog</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhihu.com/people/o-shui-ge-er" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;o-shui-ge-er" rel="noopener" target="_blank">水歌儿's Zhihu</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Vstay97" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.vstay.cn/2022/05/14/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="Vstay">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="V的学习经验">
+      <meta itemprop="description" content="Sometimes coding,Sometimes thinking">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Ajax与axios的快速使用 | V的学习经验">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ajax与axios的快速使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-05-15 01:47:26" itemprop="dateCreated datePublished" datetime="2022-05-15T01:47:26+08:00">2022-05-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">框架</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>主要内容:</p>
+<ul>
+<li>Ajax<ul>
+<li>可以在<code>不重新加载整个页面</code> 的情况下，与服务器交换数据并<code>更新部分网页</code>的技术</li>
+</ul>
+</li>
+<li>Axios<ul>
+<li>Axios可以对原生的AJAX进行封装，简化书写。</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="Ajax"><a href="#Ajax" class="headerlink" title="Ajax"></a>Ajax</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>&#x3D;&#x3D;<code>AJAX</code> (Asynchronous JavaScript And XML)：异步的 JavaScript 和 XML。&#x3D;&#x3D;</p>
+<p>我们先来说概念中的 <code>JavaScript</code> 和 <code>XML</code>，<code>JavaScript</code> 表明该技术和前端相关；<code>XML</code> 是指以此进行数据交换。而这两个我们之前都学习过。</p>
+<h4 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h4><p>AJAX 作用有以下两方面：</p>
+<ol>
+<li><strong>与服务器进行数据交换</strong>：通过AJAX可以给服务器发送请求，服务器将数据直接响应回给浏览器。如下图</li>
+</ol>
+<p>我们先来看之前做功能的流程，如下图：</p>
+<img src="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210823235114367.png" alt="image-20210823235114367" style="zoom:70%;" />
+
+<p>如上图，<code>Servlet</code> 调用完业务逻辑层后将数据存储到域对象中，然后跳转到指定的 <code>jsp</code> 页面，在页面上使用 <code>EL表达式</code> 和 <code>JSTL</code> 标签库进行数据的展示。</p>
+<p>而我们学习了AJAX 后，就可以&#x3D;&#x3D;使用AJAX和服务器进行通信，以达到使用 HTML+AJAX来替换JSP页面&#x3D;&#x3D;了。如下图，浏览器发送请求servlet，servlet 调用完业务逻辑层后将数据直接响应回给浏览器页面，页面使用 HTML 来进行数据展示。</p>
+<img src="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210823235006847.png" alt="image-20210823235006847" style="zoom:70%;" />
+
+<ol start="2">
+<li><strong>异步交互</strong>：可以在&#x3D;&#x3D;不重新加载整个页面&#x3D;&#x3D;的情况下，与服务器交换数据并&#x3D;&#x3D;更新部分网页&#x3D;&#x3D;的技术，如：搜索联想、用户名是否可用校验，等等…</li>
+</ol>
+<img src="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824000706401.png" alt="image-20210824000706401" style="zoom:80%;" />
+
+<p>上图所示的效果我们经常见到，在我们输入一些关键字（例如 <code>奥运</code>）后就会在下面联想出相关的内容，而联想出来的这部分数据肯定是存储在百度的服务器上，而我们并没有看出页面重新刷新，这就是 &#x3D;&#x3D;更新局部页面&#x3D;&#x3D; 的效果。再如下图：</p>
+<img src="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824001015706.png" alt="image-20210824001015706" style="zoom:80%;" />
+
+<p>我们在用户名的输入框输入用户名，当输入框一失去焦点，如果用户名已经被占用就会在下方展示提示的信息；在这整个过程中也没有页面的刷新，只是在局部展示出了提示信息，这就是 &#x3D;&#x3D;更新局部页面&#x3D;&#x3D; 的效果。</p>
+<h4 id="同步和异步"><a href="#同步和异步" class="headerlink" title="同步和异步"></a>同步和异步</h4><p>知道了局部刷新后，接下来我们再聊聊同步和异步:</p>
+<ul>
+<li>同步发送请求过程如下</li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824001443897.png" alt="image-20210824001443897" style="zoom:80%;" />
+
+<pre><code>浏览器页面在发送请求给服务器，在服务器处理请求的过程中，浏览器页面不能做其他的操作。只能等到服务器响应结束后才能，浏览器页面才能继续做其他的操作。
+</code></pre>
+<ul>
+<li><p>异步发送请求过程如下</p>
+<img src="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824001608916.png" alt="image-20210824001608916" style="zoom:80%;" />
+
+<p>浏览器页面发送请求给服务器，在服务器处理请求的过程中，浏览器页面还可以做其他的操作。</p>
+</li>
+</ul>
+<h3 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h3><h4 id="服务端实现"><a href="#服务端实现" class="headerlink" title="服务端实现"></a>服务端实现</h4><p>在项目的创建 <code>com.itheima.web.servlet</code> ，并在该包下创建名为  <code>AjaxServlet</code> 的servlet</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@WebServlet(&quot;/ajaxServlet&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AjaxServlet</span> <span class="keyword">extends</span> <span class="title class_">HttpServlet</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span> <span class="keyword">throws</span> ServletException, IOException &#123;</span><br><span class="line">        <span class="comment">//1. 响应数据</span></span><br><span class="line">        response.getWriter().write(<span class="string">&quot;hello ajax~&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doPost</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span> <span class="keyword">throws</span> ServletException, IOException &#123;</span><br><span class="line">        <span class="built_in">this</span>.doGet(request, response);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="客户端实现"><a href="#客户端实现" class="headerlink" title="客户端实现"></a>客户端实现</h4><p>在 <code>webapp</code> 下创建名为 <code>01-ajax-demo1.html</code> 的页面，在该页面书写 <code>ajax</code> 代码</p>
+<ul>
+<li><p>创建核心对象，不同的浏览器创建的对象是不同的</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">var</span> xhttp;</span><br><span class="line"><span class="keyword">if</span> (<span class="variable language_">window</span>.<span class="property">XMLHttpRequest</span>) &#123;</span><br><span class="line">    xhttp = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// code for IE6, IE5</span></span><br><span class="line">    xhttp = <span class="keyword">new</span> <span class="title class_">ActiveXObject</span>(<span class="string">&quot;Microsoft.XMLHTTP&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>发送请求</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//建立连接</span></span><br><span class="line">xhttp.<span class="title function_">open</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;http://localhost:8080/ajax-demo/ajaxServlet&quot;</span>);</span><br><span class="line"><span class="comment">//发送请求</span></span><br><span class="line">xhttp.<span class="title function_">send</span>();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取响应</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">xhttp.<span class="property">onreadystatechange</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">readyState</span> == <span class="number">4</span> &amp;&amp; <span class="variable language_">this</span>.<span class="property">status</span> == <span class="number">200</span>) &#123;</span><br><span class="line">        <span class="comment">// 通过 this.responseText 可以获取到服务端响应的数据</span></span><br><span class="line">        <span class="title function_">alert</span>(<span class="variable language_">this</span>.<span class="property">responseText</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>完整代码如下：</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">//1. 创建核心对象</span></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">var</span> xhttp;</span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">if</span> (<span class="variable language_">window</span>.<span class="property">XMLHttpRequest</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        xhttp = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>();</span></span><br><span class="line"><span class="language-javascript">    &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// code for IE6, IE5</span></span></span><br><span class="line"><span class="language-javascript">        xhttp = <span class="keyword">new</span> <span class="title class_">ActiveXObject</span>(<span class="string">&quot;Microsoft.XMLHTTP&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript">    <span class="comment">//2. 发送请求</span></span></span><br><span class="line"><span class="language-javascript">    xhttp.<span class="title function_">open</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;http://localhost:8080/ajax-demo/ajaxServlet&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    xhttp.<span class="title function_">send</span>();</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">//3. 获取响应</span></span></span><br><span class="line"><span class="language-javascript">    xhttp.<span class="property">onreadystatechange</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">readyState</span> == <span class="number">4</span> &amp;&amp; <span class="variable language_">this</span>.<span class="property">status</span> == <span class="number">200</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">            <span class="title function_">alert</span>(<span class="variable language_">this</span>.<span class="property">responseText</span>);</span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript">    &#125;;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>在浏览器地址栏输入 <code>http://localhost:8080/ajax-demo/01-ajax-demo1.html</code> ，在 <code>01-ajax-demo1.html</code>加载的时候就会发送 <code>ajax</code> 请求，效果如下</p>
+<img src="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824005956117.png" alt="image-20210824005956117" style="zoom:67%;" />
+
+<p>我们可以通过 <code>开发者模式</code> 查看发送的 AJAX 请求。在浏览器上按 <code>F12</code> 快捷键</p>
+<img src="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824010247642.png" alt="image-20210824010247642" style="zoom:80%;" />
+
+<p>这个是查看所有的请求，如果我们只是想看 异步请求的话，点击上图中 <code>All</code> 旁边的 <code>XHR</code>，会发现只展示 Type 是 <code>xhr</code> 的请求。如下图：</p>
+<img src="https://cdn.jsdelivr.net/gh/Vstay97/Img_storage@master/blog/2022/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/image-20210824010438260.png" alt="image-20210824010438260" style="zoom:80%;" /> 
+
+<h2 id="Axios"><a href="#Axios" class="headerlink" title="Axios"></a>Axios</h2><p>Axios 对原生的AJAX进行封装，简化书写。</p>
+<p>Axios官网是：<code>https://www.axios-http.cn</code></p>
+<h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><p>axios 使用是比较简单的，分为以下两步：</p>
+<ul>
+<li><p>引入 axios 的 js 文件</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;js/axios-0.18.0.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用axios 发送请求，并获取响应结果</p>
+<ul>
+<li><p>发送 get 请求</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">axios</span>(&#123;</span><br><span class="line">    <span class="attr">method</span>:<span class="string">&quot;get&quot;</span>,</span><br><span class="line">    <span class="attr">url</span>:<span class="string">&quot;http://localhost:8080/ajax-demo1/aJAXDemo1?username=zhangsan&quot;</span></span><br><span class="line">&#125;).<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">resp</span>)&#123;</span><br><span class="line">    <span class="title function_">alert</span>(resp.<span class="property">data</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>发送 post 请求</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">axios</span>(&#123;</span><br><span class="line">    <span class="attr">method</span>:<span class="string">&quot;post&quot;</span>,</span><br><span class="line">    <span class="attr">url</span>:<span class="string">&quot;http://localhost:8080/ajax-demo1/aJAXDemo1&quot;</span>,</span><br><span class="line">    <span class="attr">data</span>:<span class="string">&quot;username=zhangsan&quot;</span></span><br><span class="line">&#125;).<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">resp</span>)&#123;</span><br><span class="line">    <span class="title function_">alert</span>(resp.<span class="property">data</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<p><code>axios()</code> 是用来发送异步请求的，小括号中使用 js 对象传递请求相关的参数：</p>
+<ul>
+<li><code>method</code> 属性：用来设置请求方式的。取值为 <code>get</code> 或者 <code>post</code>。</li>
+<li><code>url</code> 属性：用来书写请求的资源路径。如果是 <code>get</code> 请求，需要将请求参数拼接到路径的后面，格式为： <code>url?参数名=参数值&amp;参数名2=参数值2</code>。</li>
+<li><code>data</code> 属性：作为请求体被发送的数据。也就是说如果是 <code>post</code> 请求的话，数据需要作为 <code>data</code> 属性的值。</li>
+</ul>
+<p><code>then()</code> 需要传递一个匿名函数。我们将 <code>then()</code> 中传递的匿名函数称为 &#x3D;&#x3D;回调函数&#x3D;&#x3D;，意思是该匿名函数在发送请求时不会被调用，而是在成功响应后调用的函数。而该回调函数中的 <code>resp</code> 参数是对响应的数据进行封装的对象，通过 <code>resp.data</code> 可以获取到响应的数据。</p>
+<h3 id="快速入门-1"><a href="#快速入门-1" class="headerlink" title="快速入门"></a>快速入门</h3><h4 id="后端实现"><a href="#后端实现" class="headerlink" title="后端实现"></a>后端实现</h4><p>定义一个用于接收请求的servlet，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@WebServlet(&quot;/axiosServlet&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AxiosServlet</span> <span class="keyword">extends</span> <span class="title class_">HttpServlet</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span> <span class="keyword">throws</span> ServletException, IOException &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;get...&quot;</span>);</span><br><span class="line">        <span class="comment">//1. 接收请求参数</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">username</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;username&quot;</span>);</span><br><span class="line">        System.out.println(username);</span><br><span class="line">        <span class="comment">//2. 响应数据</span></span><br><span class="line">        response.getWriter().write(<span class="string">&quot;hello Axios~&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doPost</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span> <span class="keyword">throws</span> ServletException, IOException &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;post...&quot;</span>);</span><br><span class="line">        <span class="built_in">this</span>.doGet(request, response);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="前端实现"><a href="#前端实现" class="headerlink" title="前端实现"></a>前端实现</h4><ul>
+<li><p>引入 js 文件</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=<span class="string">&quot;js/axios-0.18.0.js&quot;</span>&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>发送 ajax 请求</p>
+<ul>
+<li><p>get 请求</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">axios</span>(&#123;</span><br><span class="line">    <span class="attr">method</span>:<span class="string">&quot;get&quot;</span>,</span><br><span class="line">    <span class="attr">url</span>:<span class="string">&quot;http://localhost:8080/ajax-demo/axiosServlet?username=zhangsan&quot;</span></span><br><span class="line">&#125;).<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">resp</span>) &#123;</span><br><span class="line">    <span class="title function_">alert</span>(resp.<span class="property">data</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>post 请求</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">axios</span>(&#123;</span><br><span class="line">    <span class="attr">method</span>:<span class="string">&quot;post&quot;</span>,</span><br><span class="line">    <span class="attr">url</span>:<span class="string">&quot;http://localhost:8080/ajax-demo/axiosServlet&quot;</span>,</span><br><span class="line">    <span class="attr">data</span>:<span class="string">&quot;username=zhangsan&quot;</span></span><br><span class="line">&#125;).<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">resp</span>) &#123;</span><br><span class="line">    <span class="title function_">alert</span>(resp.<span class="property">data</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<p><strong>整体页面代码如下：</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;js/axios-0.18.0.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">//1. get</span></span></span><br><span class="line"><span class="language-javascript">   <span class="comment">/* axios(&#123;</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">        method:&quot;get&quot;,</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">        url:&quot;http://localhost:8080/ajax-demo/axiosServlet?username=zhangsan&quot;</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">    &#125;).then(function (resp) &#123;</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">        alert(resp.data);</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">    &#125;)*/</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">//2. post  在js中&#123;&#125; 表示一个js对象，而这个js对象中有三个属性</span></span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">axios</span>(&#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="attr">method</span>:<span class="string">&quot;post&quot;</span>,</span></span><br><span class="line"><span class="language-javascript">        <span class="attr">url</span>:<span class="string">&quot;http://localhost:8080/ajax-demo/axiosServlet&quot;</span>,</span></span><br><span class="line"><span class="language-javascript">        <span class="attr">data</span>:<span class="string">&quot;username=zhangsan&quot;</span></span></span><br><span class="line"><span class="language-javascript">    &#125;).<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">resp</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="title function_">alert</span>(resp.<span class="property">data</span>);</span></span><br><span class="line"><span class="language-javascript">    &#125;)</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="请求方法别名"><a href="#请求方法别名" class="headerlink" title="请求方法别名"></a>请求方法别名</h3><p>为了方便起见， Axios 已经为所有支持的请求方法提供了别名。如下：</p>
+<ul>
+<li><p><code>get</code> 请求 ： <code>axios.get(url[,config])</code></p>
+</li>
+<li><p><code>delete</code> 请求 ： <code>axios.delete(url[,config])</code></p>
+</li>
+<li><p><code>head</code> 请求 ： <code>axios.head(url[,config])</code></p>
+</li>
+<li><p><code>options</code> 请求 ： <code>axios.option(url[,config])</code></p>
+</li>
+<li><p><code>post</code> 请求：<code>axios.post(url[,data[,config])</code></p>
+</li>
+<li><p><code>put</code> 请求：<code>axios.put(url[,data[,config])</code></p>
+</li>
+<li><p><code>patch</code> 请求：<code>axios.patch(url[,data[,config])</code></p>
+</li>
+</ul>
+<p>而我们只关注 <code>get</code> 请求和 <code>post</code> 请求。</p>
+<p>入门案例中的 <code>get</code> 请求代码可以改为如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">axios.<span class="title function_">get</span>(<span class="string">&quot;http://localhost:8080/ajax-demo/axiosServlet?username=zhangsan&quot;</span>).<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">resp</span>) &#123;</span><br><span class="line">    <span class="title function_">alert</span>(resp.<span class="property">data</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>入门案例中的 <code>post</code> 请求代码可以改为如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">axios.<span class="title function_">post</span>(<span class="string">&quot;http://localhost:8080/ajax-demo/axiosServlet&quot;</span>,<span class="string">&quot;username=zhangsan&quot;</span>).<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">resp</span>) &#123;</span><br><span class="line">    <span class="title function_">alert</span>(resp.<span class="property">data</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Vstay
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.vstay.cn/2022/05/14/Ajax%E4%B8%8Eaxios%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/" title="Ajax与axios的快速使用">https://www.vstay.cn/2022/05/14/Ajax与axios的快速使用/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Ajax/" rel="tag"><i class="fa fa-tag"></i> Ajax</a>
+              <a href="/tags/axios/" rel="tag"><i class="fa fa-tag"></i> axios</a>
+              <a href="/tags/JavaWeb/" rel="tag"><i class="fa fa-tag"></i> JavaWeb</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/05/14/SpringBoot%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" rel="prev" title="SpringBoot快速入门">
+                  <i class="fa fa-chevron-left"></i> SpringBoot快速入门
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/05/15/Vue%E4%B8%8EElementUI%E7%9A%84%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/" rel="next" title="Vue与ElementUI的快速使用">
+                  Vue与ElementUI的快速使用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">陕ICP备16015358号-1 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vstay</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">876k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:17</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
